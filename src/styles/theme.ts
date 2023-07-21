@@ -10,10 +10,15 @@ export const THEME = {
     GRAY_700: '#29292E',
     GRAY_800: '#202024',
 
-    BRAND_LIGHT: '#00B37E',
-    BRAND_MID: '#00875F',
-    WARNING_LIGHT: '#FBA94C',
-    DANGER_LIGHT: '#F75A68',
+    BRAND_200: '#04D361',
+    BRAND_400: '#1B873F',
+    BRAND_600: '#00875F',
+
+    WARNING_200: '#FBA94C',
+    WARNING_400: '#EB8A1D',
+
+    DANGER_200: '#F75A68',
+    DANGER_400: '#CC2937',
 
     LABEL: '#A6A1B2',
   },
