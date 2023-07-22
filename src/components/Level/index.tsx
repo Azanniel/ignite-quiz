@@ -5,21 +5,21 @@ import {
   View,
 } from 'react-native'
 
-import { THEME } from '@/styles/theme'
+import { theme } from '@/styles/theme'
 import { styles } from './styles'
 
 const TYPE_COLORS = {
   EASY: {
-    unchecked: THEME.COLORS.BRAND_200,
-    checked: THEME.COLORS.BRAND_400,
+    unchecked: theme.colors.brand_200,
+    checked: theme.colors.brand_400,
   },
   MEDIUM: {
-    unchecked: THEME.COLORS.WARNING_200,
-    checked: THEME.COLORS.WARNING_400,
+    unchecked: theme.colors.warning_200,
+    checked: theme.colors.warning_400,
   },
   HARD: {
-    unchecked: THEME.COLORS.DANGER_200,
-    checked: THEME.COLORS.DANGER_400,
+    unchecked: theme.colors.danger_200,
+    checked: theme.colors.danger_400,
   },
 }
 
@@ -39,20 +39,20 @@ export function Level({
   const color = TYPE_COLORS[type][colorChecked]
 
   return (
-    <TouchableOpacity {...rest}>
+    <TouchableOpacity activeOpacity={0.6} {...rest}>
       <View
         style={[
           styles.container,
           {
             borderColor: color,
-            backgroundColor: isChecked ? color : THEME.COLORS.GRAY_800,
+            backgroundColor: isChecked ? color : theme.colors.gray_800,
           },
         ]}
       >
         <Text
           style={[
             styles.title,
-            { color: isChecked ? THEME.COLORS.WHITE : color },
+            { color: isChecked ? theme.colors.white : color },
           ]}
         >
           {title}

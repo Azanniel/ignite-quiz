@@ -1,5 +1,5 @@
 import { StyleSheet, StatusBar } from 'react-native'
-import { THEME } from '@/styles/theme'
+import { theme } from '@/styles/theme'
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,7 +8,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
 
-    backgroundColor: THEME.COLORS.GRAY_600,
+    backgroundColor: theme.colors.gray_600,
     paddingHorizontal: 32,
     paddingVertical: 24,
     paddingTop: 24 + (StatusBar.currentHeight || 1),
@@ -16,21 +16,21 @@ export const styles = StyleSheet.create({
 
   title: {
     fontSize: 24,
-    fontFamily: THEME.FONTS.BOLD,
-    color: THEME.COLORS.GRAY_100,
+    fontFamily: theme.fonts.bold,
+    color: theme.colors.gray_100,
   },
 
   subtitle: {
     lineHeight: 22.4,
     fontSize: 14,
-    fontFamily: THEME.FONTS.REGULAR,
-    color: THEME.COLORS.GRAY_200,
+    fontFamily: theme.fonts.regular,
+    color: theme.colors.gray_200,
   },
 
   button: {
     padding: 8,
     borderRadius: 6,
 
-    backgroundColor: THEME.COLORS.GRAY_800,
+    backgroundColor: theme.colors.gray_800,
   },
 })

@@ -6,7 +6,8 @@ import {
   Roboto_400Regular,
   Roboto_700Bold,
 } from '@expo-google-fonts/roboto'
-import { THEME } from '@/styles/theme'
+
+import { theme } from '@/styles/theme'
 
 SplashScreen.preventAutoHideAsync()
 
@@ -27,7 +28,7 @@ export default function Layout() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: THEME.COLORS.GRAY_800 }}>
+    <View style={{ flex: 1, backgroundColor: theme.colors.gray_800 }}>
       <StatusBar
         barStyle="light-content"
         backgroundColor="transparent"

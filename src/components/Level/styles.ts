@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { THEME } from '@/styles/theme'
+import { theme } from '@/styles/theme'
 
 export const styles = StyleSheet.create({
   container: {
@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
   },
 
   title: {
-    fontFamily: THEME.FONTS.REGULAR,
+    fontFamily: theme.fonts.regular,
     fontSize: 12,
     textTransform: 'uppercase',
   },
