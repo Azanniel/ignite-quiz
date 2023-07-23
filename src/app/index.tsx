@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { FlatList, View } from 'react-native'
+import { router } from 'expo-router'
 import { Trophy } from 'phosphor-react-native'
 
 import { Header } from '@/components/Header'
@@ -64,7 +65,17 @@ export default function Home() {
       <FlatList
         data={quizzes}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <QuizCard quiz={item} />}
+        renderItem={({ item }) => (
+          <QuizCard
+            quiz={item}
+            onPress={() =>
+              router.push({
+                pathname: '/quiz/[id]',
+                params: { id: item.id },
+              })
+            }
+          />
+        )}
         numColumns={2}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.cards}

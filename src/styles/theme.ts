@@ -11,6 +11,7 @@ export const theme = {
     gray_800: '#202024',
 
     brand_200: '#04D361',
+    brand_300: '#00B37E',
     brand_400: '#1B873F',
     brand_600: '#00875F',
 
