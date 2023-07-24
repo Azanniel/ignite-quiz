@@ -37,6 +37,7 @@ export default function Home() {
         icon={Trophy}
         title="Vamos estudar"
         subtitle={`Complete os desafios e avance${'\n'} em conhecimento`}
+        onPress={() => router.push('/history')}
       />
 
       <View style={styles.levels}>
