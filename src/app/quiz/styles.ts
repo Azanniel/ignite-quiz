@@ -7,15 +7,19 @@ export const styles = StyleSheet.create({
     backgroundColor: theme.colors.gray_800,
   },
 
+  content: {
+    marginTop: 20,
+  },
+
   question: {
     alignItems: 'center',
     paddingHorizontal: 32,
-    paddingTop: 80,
-    paddingBottom: 300,
+    paddingVertical: 80,
   },
 
   footer: {
     flexDirection: 'row',
+    gap: 16,
     marginTop: 24,
   },
 })

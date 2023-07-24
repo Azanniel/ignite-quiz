@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
-import { View, ScrollView } from 'react-native'
-import { useLocalSearchParams } from 'expo-router'
+import { View, ScrollView, Alert } from 'react-native'
+import { router, useLocalSearchParams } from 'expo-router'
 
 import { Loading } from '@/components/Loading'
 import { QuizHeader } from '@/components/QuizHeader'
+import { Question } from '@/components/Question'
+import { OutlineButton } from '@/components/OutlineButton'
+import { ConfirmButton } from '@/components/ConfirmButton'
 
 import { quiz as quizData } from '@/data/quiz'
 import { styles } from './styles'
@@ -13,8 +16,58 @@ type QuizProps = (typeof quizData)[0]
 export default function Quiz() {
   const [quiz, setQuiz] = useState<QuizProps>({} as QuizProps)
   const [isQuizLoading, setIsQuizLoading] = useState(true)
+  const [points, setPoints] = useState(0)
+  const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [alternativeSelected, setAlternativeSelected] = useState<null | number>(
+    null,
+  )
 
   const { id } = useLocalSearchParams()
+
+  async function handleFinished() {
+    console.log('Finish')
+  }
+
+  function handleNextQuestion() {
+    if (currentQuestion < quiz.questions.length - 1) {
+      setCurrentQuestion((prevState) => prevState + 1)
+    } else {
+      handleFinished()
+    }
+  }
+
+  function handleSkipConfirm() {
+    Alert.alert('Pular', 'Deseja realmente pular a questão?', [
+      { text: 'Sim', onPress: () => handleNextQuestion() },
+      { text: 'Não', style: 'destructive' },
+    ])
+  }
+
+  async function handleConfirm() {
+    if (alternativeSelected === null) {
+      return handleSkipConfirm()
+    }
+
+    if (quiz.questions[currentQuestion].correct === alternativeSelected) {
+      setPoints((prevState) => prevState + 1)
+    }
+
+    setAlternativeSelected(null)
+  }
+
+  function handleStop() {
+    Alert.alert('Parar', 'Deseja parar agora?', [
+      {
+        text: 'Não',
+        style: 'cancel',
+      },
+      {
+        text: 'Sim',
+        style: 'destructive',
+        onPress: router.back,
+      },
+    ])
+  }
 
   useEffect(() => {
     const currentQuiz = quizData.find((item) => item.id === id)
@@ -24,6 +77,13 @@ export default function Quiz() {
       setIsQuizLoading(false)
     }
   }, [id])
+
+  useEffect(() => {
+    if (quiz.questions) {
+      handleNextQuestion()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [points])
 
   if (isQuizLoading) {
     return <Loading />
@@ -37,9 +97,23 @@ export default function Quiz() {
       >
         <QuizHeader
           title={quiz.title}
-          currentQuestion={1}
-          totalOfQuestions={4}
+          currentQuestion={currentQuestion + 1}
+          totalOfQuestions={quiz.questions.length}
         />
+
+        <View style={styles.content}>
+          <Question
+            key={quiz.questions[currentQuestion].title}
+            question={quiz.questions[currentQuestion]}
+            alternativeSelected={alternativeSelected}
+            setAlternativeSelected={setAlternativeSelected}
+          />
+        </View>
+
+        <View style={styles.footer}>
+          <OutlineButton title="Parar" onPress={handleStop} />
+          <ConfirmButton onPress={handleConfirm} />
+        </View>
       </ScrollView>
     </View>
   )
