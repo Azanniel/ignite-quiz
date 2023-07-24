@@ -10,6 +10,7 @@ import { ConfirmButton } from '@/components/ConfirmButton'
 
 import { quiz as quizData } from '@/data/quiz'
 import { styles } from './styles'
+import { createQuizHistory } from '@/storage/actions/create-quiz-history'
 
 type QuizProps = (typeof quizData)[0]
 
@@ -25,7 +26,21 @@ export default function Quiz() {
   const { id } = useLocalSearchParams()
 
   async function handleFinished() {
-    console.log('Finish')
+    await createQuizHistory({
+      id: new Date().getTime().toString(),
+      title: quiz.title,
+      level: quiz.level,
+      points,
+      questions: quiz.questions.length,
+    })
+
+    router.replace({
+      pathname: '/finish',
+      params: {
+        points,
+        total: quiz.questions.length,
+      },
+    })
   }
 
   function handleNextQuestion() {
