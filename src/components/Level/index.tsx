@@ -1,7 +1,10 @@
-import { Text, Pressable, PressableProps } from 'react-native'
+import { useEffect } from 'react'
+import { Pressable, PressableProps } from 'react-native'
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
+  withTiming,
+  interpolateColor,
 } from 'react-native-reanimated'
 
 import { theme } from '@/styles/theme'
@@ -22,6 +25,8 @@ const TYPE_COLORS = {
   },
 }
 
+const PressableAnimated = Animated.createAnimatedComponent(Pressable)
+
 interface LevelProps extends PressableProps {
   title: string
   isChecked?: boolean
@@ -35,45 +40,54 @@ export function Level({
   ...rest
 }: LevelProps) {
   const scale = useSharedValue(1)
-
-  const animatedContainerStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scale.value }],
-    }
-  })
+  const checked = useSharedValue(1)
 
   const colorChecked = isChecked ? 'checked' : 'unchecked'
   const color = TYPE_COLORS[type][colorChecked]
 
+  const animatedContainerStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+      backgroundColor: interpolateColor(
+        checked.value,
+        [0, 1],
+        [theme.colors.gray_800, color],
+      ),
+    }
+  })
+
+  const animatedTextStyle = useAnimatedStyle(() => {
+    return {
+      color: interpolateColor(
+        checked.value,
+        [0, 1],
+        [color, theme.colors.white],
+      ),
+    }
+  })
+
   function onPressIn() {
-    scale.value = 1.2
+    scale.value = withTiming(1.1, { duration: 200 })
   }
 
   function onPressOut() {
-    scale.value = 1
+    scale.value = withTiming(1, { duration: 200 })
   }
 
+  useEffect(() => {
+    checked.value = withTiming(isChecked ? 1 : 0, { duration: 200 })
+  }, [checked, isChecked])
+
   return (
-    <Pressable onPressIn={onPressIn} onPressOut={onPressOut} {...rest}>
-      <Animated.View
-        style={[
-          styles.container,
-          animatedContainerStyle,
-          {
-            borderColor: color,
-            backgroundColor: isChecked ? color : theme.colors.gray_800,
-          },
-        ]}
-      >
-        <Text
-          style={[
-            styles.title,
-            { color: isChecked ? theme.colors.white : color },
-          ]}
-        >
-          {title}
-        </Text>
-      </Animated.View>
-    </Pressable>
+    <PressableAnimated
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
+      style={[styles.container, animatedContainerStyle, { borderColor: color }]}
+      {...rest}
+    >
+      <Animated.Text style={[styles.title, animatedTextStyle]}>
+        {title}
+      </Animated.Text>
+    </PressableAnimated>
   )
 }
