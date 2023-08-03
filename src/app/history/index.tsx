@@ -2,16 +2,21 @@ import { useEffect, useState } from 'react'
 import { Alert, ScrollView, TouchableOpacity, View } from 'react-native'
 import { router } from 'expo-router'
 import { HouseLine } from 'phosphor-react-native'
+import Animated, {
+  Layout,
+  SlideInRight,
+  SlideOutRight,
+} from 'react-native-reanimated'
 
 import { Header } from '@/components/Header'
 import { Loading } from '@/components/Loading'
 import { HistoryCard } from '@/components/HistoryCard'
 
-import { fetchQuizHistory } from '@/storage/actions/fetch-quiz-history'
 import { HistoryDTO } from '@/storage/dtos/history'
+import { fetchQuizHistory } from '@/storage/actions/fetch-quiz-history'
+import { deleteQuizHistory } from '@/storage/actions/delete-quiz-history'
 
 import { styles } from './styles'
-import { deleteQuizHistory } from '@/storage/actions/delete-quiz-history'
 
 export default function History() {
   const [isHistoryFetching, setIsHistoryFetching] = useState(true)
@@ -24,8 +29,6 @@ export default function History() {
   }
 
   async function removeHistory(id: string) {
-    setIsHistoryFetching(true)
-
     await deleteQuizHistory(id)
 
     fetchHistory()
@@ -62,15 +65,23 @@ export default function History() {
         contentContainerStyle={styles.history}
         showsVerticalScrollIndicator={false}
       >
-        {history.map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            activeOpacity={0.6}
-            onPress={() => handleRemove(item.id)}
-          >
-            <HistoryCard data={item} />
-          </TouchableOpacity>
-        ))}
+        {history.map((item, index) => {
+          return (
+            <Animated.View
+              key={item.id}
+              entering={SlideInRight.delay(index * 50)}
+              exiting={SlideOutRight.duration(400)}
+              layout={Layout.springify()}
+            >
+              <TouchableOpacity
+                activeOpacity={0.6}
+                onPress={() => handleRemove(item.id)}
+              >
+                <HistoryCard data={item} />
+              </TouchableOpacity>
+            </Animated.View>
+          )
+        })}
       </ScrollView>
     </View>
   )
