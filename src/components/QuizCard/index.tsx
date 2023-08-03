@@ -4,12 +4,16 @@ import {
   View,
   Text,
 } from 'react-native'
+import Animated, { FadeInUp, FadeOut } from 'react-native-reanimated'
 import { IconProps } from 'phosphor-react-native'
 
 import { LevelBars } from '../LevelBars'
 
 import { theme } from '@/styles/theme'
 import { styles } from './styles'
+
+const TouchableOpacityAnimated =
+  Animated.createAnimatedComponent(TouchableOpacity)
 
 export interface Quiz {
   id: string
@@ -19,14 +23,21 @@ export interface Quiz {
 }
 
 interface QuizCardProps extends TouchableOpacityProps {
+  index: number
   quiz: Quiz
 }
 
-export function QuizCard({ quiz, ...rest }: QuizCardProps) {
+export function QuizCard({ quiz, index, ...rest }: QuizCardProps) {
   const Icon = quiz.svg
 
   return (
-    <TouchableOpacity style={styles.container} activeOpacity={0.6} {...rest}>
+    <TouchableOpacityAnimated
+      style={styles.container}
+      activeOpacity={0.6}
+      entering={FadeInUp.delay(index * 100)}
+      exiting={FadeOut}
+      {...rest}
+    >
       <View style={styles.header}>
         <View style={styles.iconContainer}>
           {Icon && <Icon size={24} color={theme.colors.gray_100} />}
@@ -36,6 +47,6 @@ export function QuizCard({ quiz, ...rest }: QuizCardProps) {
       </View>
 
       <Text style={styles.title}>{quiz.title}</Text>
-    </TouchableOpacity>
+    </TouchableOpacityAnimated>
   )
 }
