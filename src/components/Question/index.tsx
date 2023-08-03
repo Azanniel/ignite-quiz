@@ -1,4 +1,5 @@
-import { View, Text } from 'react-native'
+import { Text, Dimensions } from 'react-native'
+import Animated, { Keyframe } from 'react-native-reanimated'
 
 import { Option } from '../Option'
 import { styles } from './styles'
@@ -14,13 +15,45 @@ interface QuestionProps {
   setAlternativeSelected?: (value: number) => void
 }
 
+const SCREEN_WIDTH = Dimensions.get('window').width
+
 export function Question({
   question,
   alternativeSelected,
   setAlternativeSelected,
 }: QuestionProps) {
+  const enteringKeyframe = new Keyframe({
+    0: {
+      opacity: 0,
+      transform: [{ translateX: SCREEN_WIDTH }, { rotate: '90deg' }],
+    },
+    70: {
+      opacity: 0.3,
+    },
+    100: {
+      opacity: 1,
+      transform: [{ translateX: 0 }, { rotate: '0deg' }],
+    },
+  })
+
+  const exitingKeyframe = new Keyframe({
+    from: {
+      opacity: 1,
+      transform: [{ translateX: 0 }, { rotate: '0deg' }],
+    },
+
+    to: {
+      opacity: 0,
+      transform: [{ translateX: SCREEN_WIDTH * -1 }, { rotate: '-120deg' }],
+    },
+  })
+
   return (
-    <View style={styles.container}>
+    <Animated.View
+      style={styles.container}
+      entering={enteringKeyframe}
+      exiting={exitingKeyframe}
+    >
       <Text style={styles.title}>{question.title}</Text>
 
       {question.alternatives.map((alternative, index) => (
@@ -33,6 +66,6 @@ export function Question({
           }
         />
       ))}
-    </View>
+    </Animated.View>
   )
 }
