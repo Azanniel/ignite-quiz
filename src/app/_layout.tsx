@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
-import { StatusBar, View } from 'react-native'
+import { StatusBar } from 'react-native'
 import { SplashScreen, Slot } from 'expo-router'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import {
   useFonts,
   Roboto_400Regular,
@@ -28,7 +29,9 @@ export default function Layout() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.colors.gray_800 }}>
+    <GestureHandlerRootView
+      style={{ flex: 1, backgroundColor: theme.colors.gray_800 }}
+    >
       <StatusBar
         barStyle="light-content"
         backgroundColor="transparent"
@@ -36,6 +39,6 @@ export default function Layout() {
       />
 
       <Slot />
-    </View>
+    </GestureHandlerRootView>
   )
 }
