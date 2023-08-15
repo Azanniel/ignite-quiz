@@ -87,14 +87,13 @@ export default function History() {
                 }}
                 overshootLeft={false}
                 containerStyle={styles.swipeableContainer}
+                leftThreshold={42}
+                onSwipeableOpen={() => handleRemove(item.id, index)}
                 renderLeftActions={() => {
                   return (
-                    <Pressable
-                      style={styles.swipeableRemove}
-                      onPress={() => handleRemove(item.id, index)}
-                    >
+                    <View style={styles.swipeableRemove}>
                       <Trash size={32} color={theme.colors.gray_100} />
-                    </Pressable>
+                    </View>
                   )
                 }}
               >

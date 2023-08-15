@@ -8,6 +8,7 @@ export const styles = StyleSheet.create({
   },
 
   history: {
+    flexGrow: 1,
     padding: 32,
   },
 
