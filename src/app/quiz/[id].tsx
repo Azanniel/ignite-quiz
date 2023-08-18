@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
-import { View, ScrollView, Alert } from 'react-native'
+import { View, Alert, Text } from 'react-native'
 import { router, useLocalSearchParams } from 'expo-router'
 import Animated, {
   Easing,
+  Extrapolate,
   interpolate,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
@@ -15,9 +17,12 @@ import { QuizHeader } from '@/components/QuizHeader'
 import { Question } from '@/components/Question'
 import { OutlineButton } from '@/components/OutlineButton'
 import { ConfirmButton } from '@/components/ConfirmButton'
+import { ProgressBar } from '@/components/ProgressBar'
 
 import { quiz as quizData } from '@/data/quiz'
 import { createQuizHistory } from '@/storage/actions/create-quiz-history'
+
+import { theme } from '@/styles/theme'
 import { styles } from './styles'
 
 type QuizProps = (typeof quizData)[0]
@@ -32,7 +37,9 @@ export default function Quiz() {
   )
 
   const { id } = useLocalSearchParams()
+
   const shake = useSharedValue(0)
+  const scrollY = useSharedValue(0)
 
   const shakeStyleAnimated = useAnimatedStyle(() => {
     return {
@@ -46,6 +53,40 @@ export default function Quiz() {
         },
       ],
     }
+  })
+
+  const fixedProgressBarStyleAnimated = useAnimatedStyle(() => {
+    return {
+      position: 'absolute',
+      paddingTop: 50,
+      backgroundColor: theme.colors.gray_500,
+      width: '110%',
+      left: '-5%',
+      zIndex: 1,
+      opacity: interpolate(scrollY.value, [50, 90], [0, 1], Extrapolate.CLAMP),
+      transform: [
+        {
+          translateY: interpolate(
+            scrollY.value,
+            [50, 100],
+            [-40, 0],
+            Extrapolate.CLAMP,
+          ),
+        },
+      ],
+    }
+  })
+
+  const quizHeaderStyleAnimated = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(scrollY.value, [60, 90], [1, 0], Extrapolate.CLAMP),
+    }
+  })
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y
+    },
   })
 
   async function handleFinished() {
@@ -138,17 +179,30 @@ export default function Quiz() {
 
   return (
     <View style={styles.container}>
-      <ScrollView
+      <Animated.View style={fixedProgressBarStyleAnimated}>
+        <Text style={styles.title}>{quiz.title}</Text>
+
+        <ProgressBar
+          current={currentQuestion + 1}
+          total={quiz.questions.length}
+        />
+      </Animated.View>
+
+      <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.question}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
       >
-        <QuizHeader
-          title={quiz.title}
-          currentQuestion={currentQuestion + 1}
-          totalOfQuestions={quiz.questions.length}
-        />
+        <Animated.View style={[styles.header, quizHeaderStyleAnimated]}>
+          <QuizHeader
+            title={quiz.title}
+            currentQuestion={currentQuestion + 1}
+            totalOfQuestions={quiz.questions.length}
+          />
+        </Animated.View>
 
-        <Animated.View style={[styles.content, shakeStyleAnimated]}>
+        <Animated.View style={shakeStyleAnimated}>
           <Question
             key={quiz.questions[currentQuestion].title}
             question={quiz.questions[currentQuestion]}
@@ -161,7 +215,7 @@ export default function Quiz() {
           <OutlineButton title="Parar" onPress={handleStop} />
           <ConfirmButton onPress={handleConfirm} />
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </View>
   )
 }
