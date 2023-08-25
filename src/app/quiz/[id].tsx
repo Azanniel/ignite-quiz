@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { View, Alert, Text } from 'react-native'
 import { router, useLocalSearchParams } from 'expo-router'
+import { GestureDetector, Gesture } from 'react-native-gesture-handler'
 import Animated, {
   Easing,
   Extrapolate,
@@ -40,6 +41,7 @@ export default function Quiz() {
 
   const shake = useSharedValue(0)
   const scrollY = useSharedValue(0)
+  const cardPosition = useSharedValue(0)
 
   const shakeStyleAnimated = useAnimatedStyle(() => {
     return {
@@ -77,6 +79,12 @@ export default function Quiz() {
     }
   })
 
+  const dragCardStyleAnimated = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: cardPosition.value }],
+    }
+  })
+
   const quizHeaderStyleAnimated = useAnimatedStyle(() => {
     return {
       opacity: interpolate(scrollY.value, [60, 90], [1, 0], Extrapolate.CLAMP),
@@ -88,6 +96,18 @@ export default function Quiz() {
       scrollY.value = event.contentOffset.y
     },
   })
+
+  const onPan = Gesture.Pan()
+    .onUpdate((event) => {
+      const moveToLeft = event.translationX < 0
+
+      if (moveToLeft) {
+        cardPosition.value = event.translationX
+      }
+    })
+    .onEnd(() => {
+      cardPosition.value = withTiming(0)
+    })
 
   async function handleFinished() {
     await createQuizHistory({
@@ -202,14 +222,16 @@ export default function Quiz() {
           />
         </Animated.View>
 
-        <Animated.View style={shakeStyleAnimated}>
-          <Question
-            key={quiz.questions[currentQuestion].title}
-            question={quiz.questions[currentQuestion]}
-            alternativeSelected={alternativeSelected}
-            setAlternativeSelected={setAlternativeSelected}
-          />
-        </Animated.View>
+        <GestureDetector gesture={onPan}>
+          <Animated.View style={[shakeStyleAnimated, dragCardStyleAnimated]}>
+            <Question
+              key={quiz.questions[currentQuestion].title}
+              question={quiz.questions[currentQuestion]}
+              alternativeSelected={alternativeSelected}
+              setAlternativeSelected={setAlternativeSelected}
+            />
+          </Animated.View>
+        </GestureDetector>
 
         <View style={styles.footer}>
           <OutlineButton title="Parar" onPress={handleStop} />
