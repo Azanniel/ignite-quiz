@@ -20,6 +20,7 @@ import { Question } from '@/components/Question'
 import { OutlineButton } from '@/components/OutlineButton'
 import { ConfirmButton } from '@/components/ConfirmButton'
 import { ProgressBar } from '@/components/ProgressBar'
+import { OverlayFeedback, overlayColorType } from '@/components/OverlayFeedback'
 
 import { quiz as quizData } from '@/data/quiz'
 import { createQuizHistory } from '@/storage/actions/create-quiz-history'
@@ -31,6 +32,8 @@ type QuizProps = (typeof quizData)[0]
 
 export default function Quiz() {
   const [quiz, setQuiz] = useState<QuizProps>({} as QuizProps)
+  const [statusQuizReply, setStatusQuizReply] =
+    useState<overlayColorType>('default')
   const [isQuizLoading, setIsQuizLoading] = useState(true)
   const [points, setPoints] = useState(0)
   const [currentQuestion, setCurrentQuestion] = useState(0)
@@ -162,8 +165,11 @@ export default function Quiz() {
     }
 
     if (quiz.questions[currentQuestion].correct === alternativeSelected) {
+      setStatusQuizReply('success')
       setPoints((prevState) => prevState + 1)
+      handleNextQuestion()
     } else {
+      setStatusQuizReply('error')
       shakeAnimation()
     }
 
@@ -187,7 +193,12 @@ export default function Quiz() {
   function shakeAnimation() {
     shake.value = withSequence(
       withTiming(3, { duration: 400, easing: Easing.bounce }),
-      withTiming(0),
+      withTiming(0, undefined, (finished) => {
+        'worklet'
+        if (finished) {
+          runOnJS(handleNextQuestion)()
+        }
+      }),
     )
   }
 
@@ -200,19 +211,14 @@ export default function Quiz() {
     }
   }, [id])
 
-  useEffect(() => {
-    if (quiz.questions) {
-      handleNextQuestion()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [points])
-
   if (isQuizLoading) {
     return <Loading />
   }
 
   return (
     <View style={styles.container}>
+      <OverlayFeedback variant={statusQuizReply} />
+
       <Animated.View style={fixedProgressBarStyleAnimated}>
         <Text style={styles.title}>{quiz.title}</Text>
 
@@ -243,6 +249,7 @@ export default function Quiz() {
               question={quiz.questions[currentQuestion]}
               alternativeSelected={alternativeSelected}
               setAlternativeSelected={setAlternativeSelected}
+              onUnmount={() => setStatusQuizReply('default')}
             />
           </Animated.View>
         </GestureDetector>
