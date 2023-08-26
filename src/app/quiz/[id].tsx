@@ -6,6 +6,7 @@ import Animated, {
   Easing,
   Extrapolate,
   interpolate,
+  runOnJS,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
@@ -80,8 +81,14 @@ export default function Quiz() {
   })
 
   const dragCardStyleAnimated = useAnimatedStyle(() => {
+    const cardInclination = 10
+    const rotateZ = cardPosition.value / cardInclination
+
     return {
-      transform: [{ translateX: cardPosition.value }],
+      transform: [
+        { translateX: cardPosition.value },
+        { rotateZ: `${rotateZ}deg` },
+      ],
     }
   })
 
@@ -98,6 +105,7 @@ export default function Quiz() {
   })
 
   const onPan = Gesture.Pan()
+    .activateAfterLongPress(200)
     .onUpdate((event) => {
       const moveToLeft = event.translationX < 0
 
@@ -105,7 +113,13 @@ export default function Quiz() {
         cardPosition.value = event.translationX
       }
     })
-    .onEnd(() => {
+    .onEnd((event) => {
+      const areaToSkip = -200
+
+      if (event.translationX < areaToSkip) {
+        runOnJS(handleSkipConfirm)()
+      }
+
       cardPosition.value = withTiming(0)
     })
 
