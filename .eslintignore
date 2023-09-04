@@ -1,0 +1,9 @@
+# Dependencies
+node_modules
+
+# Expo Folders
+.expo
+
+# Config
+metro.config.js
+babel.config.js

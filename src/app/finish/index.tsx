@@ -2,6 +2,7 @@ import { Text, View } from 'react-native'
 import { router, useLocalSearchParams } from 'expo-router'
 
 import { Button } from '@/components/Button'
+import { Stars } from '@/components/Stars'
 
 import { styles } from './styles'
 
@@ -11,6 +12,8 @@ export default function Finish() {
   return (
     <View style={styles.container}>
       <View style={styles.message}>
+        <Stars />
+
         <Text style={styles.title}>Parabéns!</Text>
 
         <Text style={styles.subtitle}>
