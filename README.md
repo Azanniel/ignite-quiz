@@ -6,7 +6,7 @@
   > Um clássico jogo de perguntas e respostas dos principais conceitos do React Native
   
   <p align="center">
-    <a href="#-tecnologias">Tecnologias relevantes</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+    <a href="#-tecnologias-relevantes">Tecnologias relevantes</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
     <a href="#-projeto">Projeto</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
     <a href="#-layout">Layout</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
     <a href="#-contatos">Contatos</a>
