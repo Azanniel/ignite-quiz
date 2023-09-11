@@ -28,7 +28,7 @@ A lista de tecnologias abaixo mostra um pouco do que foi abordado nesta aplicaç
 - [Skia](https://docs.expo.dev/versions/latest/sdk/skia/): Gráficos 2D de alto desempenho.
 - [AsyncStorage](https://docs.expo.dev/versions/latest/sdk/async-storage/): Uma biblioteca que fornece uma API de armazenamento de valor-chave assíncrona, não criptografada e persistente.
 
-## ⚛️ Projeto
+## 🌟 Projeto
 
 Projeto desenvolvido durante o módulo de animações em React Native onde o objetivo é um jogo clássico de perguntas e respostas no formato de Quiz com assuntos voltados à área de React Native.
 
