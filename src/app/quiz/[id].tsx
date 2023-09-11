@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { View, Alert, Text } from 'react-native'
 import { router, useLocalSearchParams } from 'expo-router'
+import { Audio } from 'expo-av'
+import * as Haptics from 'expo-haptics'
 import { GestureDetector, Gesture } from 'react-native-gesture-handler'
 import Animated, {
   Easing,
@@ -126,6 +128,17 @@ export default function Quiz() {
       cardPosition.value = withTiming(0)
     })
 
+  async function playSound(isCorrect: boolean) {
+    const file = isCorrect
+      ? require('../../assets/correct.mp3')
+      : require('../../assets/wrong.mp3')
+
+    const { sound } = await Audio.Sound.createAsync(file, { shouldPlay: true })
+
+    await sound.setPositionAsync(0)
+    await sound.playAsync()
+  }
+
   async function handleFinished() {
     await createQuizHistory({
       id: new Date().getTime().toString(),
@@ -165,10 +178,14 @@ export default function Quiz() {
     }
 
     if (quiz.questions[currentQuestion].correct === alternativeSelected) {
-      setStatusQuizReply('success')
       setPoints((prevState) => prevState + 1)
+
+      playSound(true)
+
+      setStatusQuizReply('success')
       handleNextQuestion()
     } else {
+      playSound(false)
       setStatusQuizReply('error')
       shakeAnimation()
     }
@@ -190,7 +207,9 @@ export default function Quiz() {
     ])
   }
 
-  function shakeAnimation() {
+  async function shakeAnimation() {
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+
     shake.value = withSequence(
       withTiming(3, { duration: 400, easing: Easing.bounce }),
       withTiming(0, undefined, (finished) => {
