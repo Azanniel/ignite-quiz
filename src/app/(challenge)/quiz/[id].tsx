@@ -130,8 +130,8 @@ export default function Quiz() {
 
   async function playSound(isCorrect: boolean) {
     const file = isCorrect
-      ? require('../../assets/correct.mp3')
-      : require('../../assets/wrong.mp3')
+      ? require('../../../assets/correct.mp3')
+      : require('../../../assets/wrong.mp3')
 
     const { sound } = await Audio.Sound.createAsync(file, { shouldPlay: true })
 
