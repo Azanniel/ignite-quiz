@@ -6,7 +6,7 @@ export default function Layout() {
       screenOptions={{
         headerShown: false,
         gestureEnabled: false,
-        animation: 'none',
+        animation: 'fade',
       }}
     />
   )

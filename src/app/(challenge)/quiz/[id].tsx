@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { View, Alert, Text } from 'react-native'
+import { View, Alert, Text, BackHandler } from 'react-native'
 import { router, useLocalSearchParams } from 'expo-router'
 import { Audio } from 'expo-av'
 import * as Haptics from 'expo-haptics'
@@ -220,6 +220,20 @@ export default function Quiz() {
       }),
     )
   }
+
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      () => {
+        handleStop()
+        return true
+      },
+    )
+
+    return () => {
+      backHandler.remove()
+    }
+  }, [])
 
   useEffect(() => {
     const currentQuiz = quizData.find((item) => item.id === id)
